@@ -31,6 +31,7 @@ class FlatstateServiceProvider extends ServiceProvider
                 $this->getConfigFile() => config_path(self::config),
             ], 'config');
         } else {
+            $this->app->bind('dimonka2.flatstate', FlatstateService::class);
             /* Blade::directive(config('flatform.blade_directive', 'form'), function ($form) {
             //     return "<?php echo \dimonka2\\flatform\Flatform::render($form); ?>";
             // });
