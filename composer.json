@@ -1,0 +1,36 @@
+{
+    "name": "dimonka2/flatstate",
+    "description": "Model states manager with simplified state declaration for Laravel",
+    "type": "library",
+    "version": "0.0.1",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dmitry Gultyaev",
+            "email": "dimonka@gmail.com"
+        }
+    ],
+    "keywords": [
+        "laravel",
+        "php",
+        "state",
+        "helper"
+      ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.0",
+        "laravelcollective/html": "^6"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "dimonka2\\flatstate\\FlatstateServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "dimonka2\\flatform\\": "src/"
+        }
+    }
+}
