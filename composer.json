@@ -2,7 +2,7 @@
     "name": "dimonka2/flatstate",
     "description": "Model states manager with simplified state declaration for Laravel",
     "type": "library",
-    "version": "0.0.1",
+    "homepage": "https://github.com/Dimonka2",
     "license": "MIT",
     "authors": [
         {
@@ -18,13 +18,17 @@
       ],
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.0"
+        "php": "^7",
+        "laravel/framework": "^6"
     },
     "extra": {
         "laravel": {
             "providers": [
                 "dimonka2\\flatstate\\FlatstateServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Flatform": "dimonka2\\flatstate\\Flatstate"
+            }
         }
     },
     "autoload": {

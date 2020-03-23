@@ -4,85 +4,92 @@ use dimonka2\flatstate\State;
 
 class FlatstateService
 {
-    private static $states = null;	
+	protected const fillable = [
+		'name',	
+        'icon',
+		'descriptions',
+		'color',
+	];
+
+	private static $table;
+	private static $fillable;
+
+	private static $manager;	
+	
+	public static function getStateFillable(): array
+	{
+		if(!static::$fillable) static::$fillable = static::config('flatstate.fillable', static::fillable);
+		return static::$fillable;
+	}
+
+	public static function getStateTable()
+	{
+		if(!static::$table) static::$table = static::config('flatstate.table', 'states');
+		return static::$table;
+	}
+
+	public static function config($path, $default = null)
+    {
+        return config($path, $default);
+    }
     
     private static function cachedAs()
     {
-        return config('flatstate.cached_as', 'dimonka2.flatstates');
+        return self::config('flatstate.cached_as', 'dimonka2.flatstates');
     }
 
-    public function stateClass()
+    protected function stateClass()
     {
-        return State::class;
-    }
+        return self::config('flatstate.state_class', State::class);
+	}
+	
+	protected function managerClass()
+    {
+        return self::config('flatstate.manager_class', StateManager::class);
+	}
+	
+	protected static function manager()
+	{
+		if(!static::$manager) {
+			$class = static::managerClass();
+			static::$manager = new $class(static::stateClass(), static::cachedAs());
+		}
+		return static::$manager;
+	}
 
     public static function formatState($state, $addIcon = false)
-	{
-		if (!is_object($state)) $state = static::getState($state);
-		if (!is_object($state) ) 	{return "";}
-		return ($addIcon ? $state->icon . " " : "") . $state->localizedName();
+	{		
+		return static::manager()->formatState($state, $addIcon);
 	}
     
     public static function clearCache()
     {
-        Cache::forget(self::cachedAs());
+        return static::manager()->clearCache();
     }
     
-    protected static function getStates()
-	{
-        if (is_null(static::$states)) static::$states = 
-            Cache::rememberForever(self::cachedAs(), function () {
-			    return \App\Models\State::all();
-		    });
-		return static::$states;
-	}
-
 	public static function getState($id)
     {
-        return static::getStates()->where('id', $id)->first();
+        return static::manager()->getState($id);
 	}	
 	
 	public static function getStateKey($id)
     {
-		$state = self::getState($id);
-		if(!is_object($state)) return null;
-		return $state->state_key;
+		return static::manager()->getStateKey($id);
     }
 
 	public static function selectState($key)
     {
-        return static::getStates()->where('state_key', $key)->first();
+        return static::manager()->selectState($key);
 	}	
 	
     public static function selectStateId($key)
     {
-        $state = self::selectState($key);
-        if (!is_object($state)) return null;
-        return $state->id;
+        return static::manager()->selectStateId($key);
     }	
 	
 	public static function selectStateList($category, $sort = true)
     {
-        $states = static::getStates()->where('category', $category)->all();
-		// try to localaize states
-		// Log::info('Got some states', ['states' => $states]);
-		$res = [];
-		foreach ($states as $state) {
-			$stateid = 'states.' . $state['state_key'];
-			$newName = __($stateid);
-			// Log::info('Item info', ['state' => $state, 'key' => $key, 'new name' => $newName]);
-			if ($newName == $stateid) {
-				$newName = $state['name'];
-			}
-//          if ($state->icon != "") {
-//                $newName = $state->icon . ' ' . $newName;
-//            }
-			$res[$state['id']] = $newName;
-		}
-		if ($sort) {
-			asort($res);
-		}
-		return $res;
+        return static::manager()->selectStateList($category, $sort);
     }
 
 }

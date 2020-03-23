@@ -8,6 +8,10 @@ return [
     'fillable' => [
 		'name',	
         'icon',
-        'descriptions',        
+        'descriptions',    
+        'color',    
     ],
+
+    // add models that uses states
+    'models' => [],
 ];

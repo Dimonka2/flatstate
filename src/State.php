@@ -6,35 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class State extends Model
 {
-    protected $table = 'states';
 	protected $primaryKey = 'id';
 	
-	protected $fillable = [
-		'name',	
-        'icon',
-        'descriptions'
-    ];
+	protected $fillable;
+	
 	
 	public $timestamps = true;
-	protected $guarded  = array('id', 'category', 'state_key');
-    
+	protected $guarded  = ['id', 'state_type', 'state_key'];
+	
     public function __construct( array $attributes = [] )
     {
-        $this->table = config('flatstate.table', 'states');
-        $this->fillable = config('flatstate.fillable', $this->fillable);
+        $this->table = Flatstate::getStateTable();
+        $this->fillable = Flatstate::getStateFillable();
 
         parent::__construct($attributes);
 
     }
-	
-	public function localizedName()
-	{
-		$loc_name = 'states.' . $this->state_key;
-		$newName = __($loc_name);
-		if ($newName == $loc_name) {
-			$newName = $this->name;
-		}
-		return $newName;
-	}
+
 	
 }
