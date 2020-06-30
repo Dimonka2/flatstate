@@ -1,6 +1,6 @@
 <?php
 
-namespace dimonka2\flatform\Commands;
+namespace dimonka2\flatstate\Commands;
 
 use dimonka2\flatstate\Flatstate;
 use dimonka2\flatstate\Traits\Stateable;
@@ -88,7 +88,7 @@ class SeedCommand extends Command
             $this->info('Seeding states: ' . self::format($state, 'model') . ' type: ' . self::format($state_type, 'model') );
             foreach($definition as $state){
                 if(is_array($state)) {
-                    $this->processState($state_type, $state)
+                    $this->processState($state_type, $state);
                 }
             }        
         }
