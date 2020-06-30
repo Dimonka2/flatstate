@@ -29,6 +29,7 @@ class FlatstateServiceProvider extends ServiceProvider
         $this->app->singleton('flatstates', StateManager::class);
         $this->app->bind('flatstate', FlatstateService::class);
         if ($this->app->runningInConsole()) {
+            $this->loadMigrationsFrom(__DIR__.'/Migration');
             $this->publishes([
                 $this->getConfigFile() => config_path(self::config),
             ], 'config');
