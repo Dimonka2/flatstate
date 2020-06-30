@@ -50,7 +50,7 @@ class SeedCommand extends Command
             return;
         }
         $state = $this->manager->selectState($key);
-        
+
         if($state == null) {
             $state = new $this->stateClass;
             $state->state_key = $key;
@@ -69,7 +69,7 @@ class SeedCommand extends Command
     {
         $this->info('Processing model: ' . self::format($modelClass, 'model'));
         $usingTrait = in_array(
-            Stateable::class, 
+            Stateable::class,
             array_keys((new \ReflectionClass($modelClass))->getTraits())
         );
         if(!$usingTrait) {
@@ -78,21 +78,21 @@ class SeedCommand extends Command
         }
         $modelStates = (new $modelClass)->getStates();
         foreach ($modelStates as $state => $definition) {
-            $state_type = $definition['state_type'] ?? null;
-            
+            $state_type = $definition['type'] ?? null;
+
             if(!is_string($state_type)) {
                 $this->info(self::format('Following state does not have type', 'error') . ': ' . $state);
                 return;
-            }     
-            
+            }
+
             $this->info('Seeding states: ' . self::format($state, 'model') . ' type: ' . self::format($state_type, 'model') );
             foreach($definition as $state){
                 if(is_array($state)) {
                     $this->processState($state_type, $state);
                 }
-            }        
+            }
         }
-    } 
+    }
 
     /**
      * Execute the console command.
@@ -106,13 +106,15 @@ class SeedCommand extends Command
         $this->info(self::format('Seeding states', 'title'));
         $this->addStyle('model', 'green', 'default', ['bold']);
         $this->stateClass = Flatstate::stateClass();
-        $this->info('State class: ' . self::format('Seeding states', 'model'));
+        $this->info('State class: ' . self::format($this->stateClass, 'model'));
         $models = Flatstate::config('models');
         $this->manager = app('flatstates');
         $this->manager->clearCache();
-        
+
         foreach ($models as $modelClass) {
             $this->processModelStates($modelClass);
         }
+
+        $this->manager->clearCache();
     }
 }

@@ -18,7 +18,7 @@ class StateManager
 
 	protected function getStates()
 	{
-        if (is_null($this->states)){ 
+        if (is_null($this->states)){
             $this->states = Cache::rememberForever($this->cachedAs, function () {
 			    return $this->stateClass::all();
             });
@@ -83,6 +83,7 @@ class StateManager
 
     public function getStateList($type = null)
     {
+        // echo(print_r($this->getStates()->toArray(), true));
         if($type) return $this->getStates()->where('state_type', $type)->all();
         return $this->getStates();
     }

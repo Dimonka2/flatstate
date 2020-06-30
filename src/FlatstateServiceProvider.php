@@ -27,6 +27,7 @@ class FlatstateServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->singleton('flatstates', StateManager::class);
+        $this->app->bind('flatstate', FlatstateService::class);
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 $this->getConfigFile() => config_path(self::config),
@@ -35,11 +36,10 @@ class FlatstateServiceProvider extends ServiceProvider
                 \dimonka2\flatstate\Commands\ListCommand::class,
                 \dimonka2\flatstate\Commands\SeedCommand::class,
             ]);
-        } else {            
-            $this->app->bind('Flatstate', FlatstateService::class);
+        } else {
             Blade::directive(config('state_directive', 'state'), function ($state) {
                 return "<?php echo app('flatstates')->formatState($state); ?>";
-            });            
+            });
         }
     }
 

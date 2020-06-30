@@ -11,6 +11,6 @@ class Flatstate extends Facade
     * @return string
     */
    protected static function getFacadeAccessor() {
-     return 'Flatstate'; 
+     return 'flatstate';
    }
 }

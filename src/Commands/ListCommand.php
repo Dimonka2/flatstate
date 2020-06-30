@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 class ListCommand extends Command
 {
     use StyledTrait;
+    protected $stateClass;
 
        /**
      * The name and signature of the console command.
@@ -43,7 +44,12 @@ class ListCommand extends Command
     public function handle()
     {
         $this->addStyle('title', 'red', 'default', ['bold']);
+        $this->addStyle('model', 'green', 'default', ['bold']);
         $this->info(self::format('Listing states', 'title'));
+
+        $this->stateClass = Flatstate::stateClass();
+        $this->info('State class: ' . self::format($this->stateClass, 'model'));
+
         if($this->argument('category')) {
             $states = Flatstate::getStateList($this->argument('category'));
             $states = collect($states)->map(function ($item, $key) {
@@ -53,7 +59,7 @@ class ListCommand extends Command
             });
             $this->table(['state_type', 'state_key', 'name', 'id' ], $states);
         } else {
-            $categories = Flatstate::stateClass()::select('state_type', DB::raw('count(*)'))->groupBy('state_type')->get();
+            $categories = $this->stateClass::select('state_type', DB::raw('count(*)'))->groupBy('state_type')->get();
             $this->table(['state_type', 'count' ], $categories);
         }
 
