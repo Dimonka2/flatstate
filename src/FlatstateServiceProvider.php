@@ -26,7 +26,7 @@ class FlatstateServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->singelton('flatstates', StateManager::class);
+        $this->app->singleton('flatstates', StateManager::class);
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 $this->getConfigFile() => config_path(self::config),
