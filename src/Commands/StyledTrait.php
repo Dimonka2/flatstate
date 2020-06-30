@@ -1,6 +1,6 @@
 <?php
 
-namespace dimonka2\flatform\Commands;
+namespace dimonka2\flatstate\Commands;
 
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
