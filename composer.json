@@ -19,7 +19,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7",
-        "laravel/framework": "^6"
+        "laravel/framework": "^7"
     },
     "extra": {
         "laravel": {
@@ -27,7 +27,7 @@
                 "dimonka2\\flatstate\\FlatstateServiceProvider"
             ],
             "aliases": {
-                "Flatform": "dimonka2\\flatstate\\Flatstate"
+                "Flatstate": "dimonka2\\flatstate\\Flatstate"
             }
         }
     },

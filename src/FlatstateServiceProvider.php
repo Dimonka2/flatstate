@@ -16,7 +16,7 @@ class FlatstateServiceProvider extends ServiceProvider
     private const config = 'flatstate.php';
     public function register()
     {
-        AliasLoader::getInstance(config('flatstate.aliases', []));
+        AliasLoader::getInstance(config('aliases', []));
     }
 
     /**
@@ -26,18 +26,16 @@ class FlatstateServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app->singelton('flatstates', StateManager::class);
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 $this->getConfigFile() => config_path(self::config),
             ], 'config');
-        } else {
-            $this->app->bind('dimonka2.flatstate', FlatstateService::class);
-            /* Blade::directive(config('flatform.blade_directive', 'form'), function ($form) {
-            //     return "<?php echo \dimonka2\\flatform\Flatform::render($form); ?>";
-            // });
-            // $this->loadViewsFrom(
-            //     config('flatform.views_directory', __DIR__.'/../views'), 'flatform');
-            */
+        } else {            
+            $this->app->bind('Flatstate', FlatstateService::class);
+            Blade::directive(config('state_directive', 'state'), function ($state) {
+                return "<?php echo app('flatstates')->formatState($state); ?>";
+            });            
         }
     }
 

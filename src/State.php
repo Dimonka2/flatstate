@@ -6,10 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class State extends Model
 {
-	protected $primaryKey = 'id';
-	
-	protected $fillable;
-	
+	protected $primaryKey = 'id';	
+    protected $fillable;	
 	
 	public $timestamps = true;
 	protected $guarded  = ['id', 'state_type', 'state_key'];
@@ -22,6 +20,5 @@ class State extends Model
         parent::__construct($attributes);
 
     }
-
 	
 }

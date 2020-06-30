@@ -20,8 +20,8 @@ class CreateStatesTable extends Migration
 			$table->text('description')->nullable();
             $table->string('icon')->nullable();
             $table->string('color')->nullable();
-			$table->string('state_type', 20);
-			$table->string('state_key', 20);
+			$table->string('state_type', 32);
+			$table->string('state_key', 32);
 
 			$table->unique(['state_type', 'state_key']);
         });

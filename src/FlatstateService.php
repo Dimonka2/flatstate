@@ -13,48 +13,42 @@ class FlatstateService
 
 	private static $table;
 	private static $fillable;
-
-	private static $manager;	
 	
 	public static function getStateFillable(): array
 	{
-		if(!static::$fillable) static::$fillable = static::config('flatstate.fillable', static::fillable);
+		if(!static::$fillable) static::$fillable = static::config('fillable', static::fillable);
 		return static::$fillable;
 	}
 
 	public static function getStateTable()
 	{
-		if(!static::$table) static::$table = static::config('flatstate.table', 'states');
+		if(!static::$table) static::$table = static::config('table', 'states');
 		return static::$table;
 	}
 
 	public static function config($path, $default = null)
     {
-        return config($path, $default);
+        return config('flatstate.' . $path, $default);
     }
     
-    private static function cachedAs()
+    public static function cachedAs()
     {
-        return self::config('flatstate.cached_as', 'dimonka2.flatstates');
+        return self::config('cached_as', 'dimonka2.flatstates');
     }
 
     protected function stateClass()
     {
-        return self::config('flatstate.state_class', State::class);
+        return self::config('state_class', State::class);
 	}
 	
 	protected function managerClass()
     {
-        return self::config('flatstate.manager_class', StateManager::class);
+        return self::config('manager_class', StateManager::class);
 	}
 	
 	protected static function manager()
 	{
-		if(!static::$manager) {
-			$class = static::managerClass();
-			static::$manager = new $class(static::stateClass(), static::cachedAs());
-		}
-		return static::$manager;
+		return app('flatstates');
 	}
 
     public static function formatState($state, $addIcon = false)

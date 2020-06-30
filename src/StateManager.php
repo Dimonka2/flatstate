@@ -10,10 +10,10 @@ class StateManager
     private $cachedAs;
     private $stateClass;
 
-    public function __construct($stateClass, $cachedAs)
+    public function __construct()
     {
-        $this->cachedAs = $cachedAs;
-        $this->stateClass = $stateClass;
+        $this->cachedAs = Flatstate::cachedAs();
+        $this->stateClass = Flatstate::stateClass();
     }
 
 	protected function getStates()
@@ -43,6 +43,7 @@ class StateManager
         if(!is_object($state)) return null;
         return $state->state_key;
     }
+
 
     public static function formatIcon($icon)
     {
