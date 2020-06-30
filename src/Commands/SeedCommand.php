@@ -5,11 +5,14 @@ namespace dimonka2\flatform\Commands;
 use dimonka2\flatstate\Flatstate;
 use dimonka2\flatstate\Traits\Stateable;
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+
 
 class SeedCommand extends Command
 {
+    use StyledTrait;
 
+    protected $usedStates = [];
+    protected $stateClass;
     /**
      * The name and signature of the console command.
      *
@@ -34,17 +37,6 @@ class SeedCommand extends Command
         parent::__construct();
     }
 
-    protected function addStyle($styleName, $foreColor = 'default', $bgColor = 'default', $options = [])
-    {
-        $style = new OutputFormatterStyle($foreColor, $bgColor, $options);
-        $this->output->getFormatter()->setStyle($styleName, $style);
-    }
-
-    protected static function format($text, $styleName)
-    {
-        return "<" . $styleName . ">" . $text . "</" . $styleName . ">";
-    }
-
     protected function processModelStates($modelClass)
     {
         $this->info('Processing model: ' . self::format($modelClass, 'model'));
@@ -60,30 +52,9 @@ class SeedCommand extends Command
             $state_type = $definition['state_type'] ?? null;
             if(!is_string($state_type)) {
 
-            }
-        }
-    } 
+            }            
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        $this->addStyle('title', 'red', 'default', ['bold']);
-        $this->info(self::format('Seeding states', 'title'));
-        $this->addStyle('model', 'green', 'default', ['bold']);
-        $models = Flatstate::config('models');
-        $manager = app('flatstates');
-        $manager->clearCache();
-        $usedStates = [];
-        foreach ($models as $modelClass) {
-            $this->processModelStates($modelClass);
-        }
-
-
-            $state = $manager->selectState($key);
+            $state = $this->manager->selectState($key);
             if($state == null) {
                 $state = new State;
                 $state->state_key = $key;
@@ -97,6 +68,28 @@ class SeedCommand extends Command
             } else {
                 $state->update();
             }
+        
+        }
+    } 
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $this->addStyle('title', 'red', 'default', ['bold']);
+        $this->info(self::format('Seeding states', 'title'));
+        $this->addStyle('model', 'green', 'default', ['bold']);
+        $this->stateClass = Flatstate::stateClass();
+        $this->info('State class: ' . self::format('Seeding states', 'model'));
+        $models = Flatstate::config('models');
+        $this->manager = app('flatstates');
+        $this->manager->clearCache();
+        
+        foreach ($models as $modelClass) {
+            $this->processModelStates($modelClass);
         }
     }
 }
