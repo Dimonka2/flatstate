@@ -1,6 +1,6 @@
 <?php
 
-namespace dimonka2\flatform\Commands;
+namespace dimonka2\flatstate\Commands;
 
 use dimonka2\flatstate\Flatstate;
 use dimonka2\flatstate\Traits\Stateable;
