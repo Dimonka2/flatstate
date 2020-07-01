@@ -4,12 +4,16 @@
 
 return [
     'cached_as' => 'dimonka2.flatstates',
-    'table' => 'states',
+    'migration' => [
+        'table' => 'states',
+        'enabled' => true,
+    ],
+
     'fillable' => [
-		'name',	
+		'name',
         'icon',
-        'descriptions',    
-        'color',    
+        'descriptions',
+        'color',
     ],
 
     // add models that uses states

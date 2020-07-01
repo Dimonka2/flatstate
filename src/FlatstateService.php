@@ -22,7 +22,7 @@ class FlatstateService
 
 	public static function getStateTable()
 	{
-		if(!static::$table) static::$table = static::config('table', 'states');
+		if(!static::$table) static::$table = static::config('migration.table', 'states');
 		return static::$table;
 	}
 

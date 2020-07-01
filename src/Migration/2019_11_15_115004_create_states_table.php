@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use dimonka2\flatstate\Flatstate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateStatesTable extends Migration
 {
@@ -13,7 +14,8 @@ class CreateStatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('states', function (Blueprint $table) {
+        if(!Flatstate::config('migration.enabled', true)) return;
+        Schema::create(Flatstate::getStateTable(), function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
 			$table->string('name');
@@ -34,6 +36,7 @@ class CreateStatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('states');
+        if(!Flatstate::config('migration.enabled', true)) return;
+        Schema::dropIfExists(Flatstate::getStateTable());
     }
 }
