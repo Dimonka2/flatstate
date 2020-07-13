@@ -34,6 +34,7 @@ class StateManager
 
     public function getState($id)
     {
+        if(is_array($id)) return $this->getStates()->whereIn('id', $id)->all();
         return $this->getStates()->where('id', $id)->first();
     }
 
