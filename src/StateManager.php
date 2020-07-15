@@ -91,7 +91,11 @@ class StateManager
 
     public function selectStateList($type, $sort = true)
     {
-        $states = $this->getStates()->where('state_type', $type)->all();
+        if(is_array($type)) {
+            $states = $this->getStates()->whereIn('state_key', $type)->all();
+        } else {
+            $states = $this->getStates()->where('state_type', $type)->all();
+        }
 		$res = [];
 		foreach ($states as $state) {
 			$stateid = 'states.' . $state['state_key'];
