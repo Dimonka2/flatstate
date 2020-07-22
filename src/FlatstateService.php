@@ -91,4 +91,9 @@ class FlatstateService
         return static::manager()->getStateList($type);
     }
 
+    public static function color($state, $default = 'dark')
+    {
+        return static::manager()->color($state, $default);
+    }
+
 }

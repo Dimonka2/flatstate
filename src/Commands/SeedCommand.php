@@ -13,6 +13,7 @@ class SeedCommand extends Command
 
     protected $usedStates = [];
     protected $stateClass;
+
     /**
      * The name and signature of the console command.
      *
@@ -63,6 +64,13 @@ class SeedCommand extends Command
         } else {
             $state->update();
         }
+
+        if($this->verbose){
+            $properties = '';
+            if($definition['icon'] ?? false) $properties .= 'icon: ' . $definition['icon'] . '; ';
+            if($definition['color'] ?? false) $properties .= 'color: ' . $definition['color'] . '; ';
+            $this->info('Seeding: '. self::format($key, 'model') . ' / ' . $name . ($properties ? ' - ' . $properties : ""));
+        }
     }
 
     protected function processModelStates($modelClass)
@@ -101,10 +109,11 @@ class SeedCommand extends Command
      */
     public function handle()
     {
+        $this->verbose = $this->hasOption('verbose');
         $this->addStyle('title', 'red', 'default', ['bold']);
         $this->addStyle('error', 'white', 'red', ['bold']);
         $this->info(self::format('Seeding states', 'title'));
-        $this->addStyle('model', 'green', 'default', ['bold']);
+        $this->addStyle('model', 'yellow', 'black', ['bold']);
         $this->stateClass = Flatstate::stateClass();
         $this->info('State class: ' . self::format($this->stateClass, 'model'));
         $models = Flatstate::config('models');
