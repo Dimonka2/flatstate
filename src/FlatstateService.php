@@ -13,6 +13,7 @@ class FlatstateService
 
 	private static $table;
 	private static $fillable;
+    private static $formatFunction;
 
 	public static function getStateFillable(): array
 	{
@@ -53,8 +54,21 @@ class FlatstateService
 
     public static function formatState($state, $addIcon = false)
 	{
-		return static::manager()->formatState($state, $addIcon);
+		if (!is_object($state)) $state = static::getState($state);
+        if($addIcon instanceof \Closure) {
+            return $addIcon($state);
+        }
+        if(static::$formatFunction instanceof \Closure) {
+            return static::$formatFunction($state, $addIcon);
+        }
+		if (!is_object($state) ) 	{return "";}
+		return ($addIcon ? static::formatIcon($state->icon) . "&nbsp;" : "") . $state->name;
 	}
+
+    public static function formatIcon($icon)
+    {
+        return '<i class="'. $icon . '"></i>';
+    }
 
     public static function clearCache()
     {
@@ -96,4 +110,14 @@ class FlatstateService
         return static::manager()->color($state, $default);
     }
 
+
+    /**
+     * Set the value of formatFunction
+     *
+     * @return  self
+     */
+    public static function setFormatFunction($formatFunction)
+    {
+        static::$formatFunction = $formatFunction;
+    }
 }

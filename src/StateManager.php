@@ -45,12 +45,6 @@ class StateManager
         return $state->state_key;
     }
 
-
-    public static function formatIcon($icon)
-    {
-        return '<i class="'. $icon . '"></i>';
-    }
-
     public function getStateIcon($id, $formatted = true)
     {
         $state = $this->getState($id);
@@ -115,9 +109,7 @@ class StateManager
 
 	public function formatState($state, $addIcon = true)
 	{
-		if (!is_object($state)) $state = $this->getState($state);
-		if (!is_object($state) ) 	{return "";}
-		return ($addIcon ? self::formatIcon($state->icon) . "&nbsp;" : "") . $state->name;
+		return Flatstate::formatState($state, $addIcon);
     }
 
     public function closest_state($input, $collection, &$percent = null) {

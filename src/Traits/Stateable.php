@@ -29,7 +29,7 @@ trait Stateable
 
     public function getState($state = 'state_id')
     {
-        return self::getStateKey($this->{$state});
+        return static::getStateKey($this->{$state});
     }
 
     public function getState_($state = 'state_id')
@@ -39,21 +39,21 @@ trait Stateable
 
     public function getStateState()
     {
-        return self::getStateKey($this->state_id);
+        return static::getStateKey($this->state_id);
     }
 
     public function formatStateState($icon = true)
     {
-        return self::formatState($this->state_id, $icon);
+        return static::formatState($this->state_id, $icon);
     }
 
     public function getStateType()
     {
-        return self::getStateKey($this->type_id);
+        return static::getStateKey($this->type_id);
     }
 
     public function formatStateType($icon = true)
     {
-        return self::formatState($this->type_id, $icon);
+        return static::formatState($this->type_id, $icon);
     }
 }
