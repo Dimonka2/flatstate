@@ -2,10 +2,11 @@
 
 namespace dimonka2\flatstate\Commands;
 
-use dimonka2\flatstate\Flatstate;
-use dimonka2\flatstate\Traits\Stateable;
 use Illuminate\Console\Command;
-
+use dimonka2\flatstate\Flatstate;
+use Illuminate\Database\Eloquent\Model;
+use dimonka2\flatstate\Traits\Stateable;
+use Symfony\Component\ClassLoader\ClassMapGenerator;
 
 class SeedCommand extends Command
 {
@@ -13,6 +14,7 @@ class SeedCommand extends Command
 
     protected $usedStates = [];
     protected $stateClass;
+    private $processedModels = [];
 
     /**
      * The name and signature of the console command.
@@ -73,18 +75,8 @@ class SeedCommand extends Command
         }
     }
 
-    protected function processModelStates($modelClass)
+    protected function processModelStates(array $modelStates)
     {
-        $this->info('Processing model: ' . self::format($modelClass, 'model'));
-        $usingTrait = in_array(
-            Stateable::class,
-            array_keys((new \ReflectionClass($modelClass))->getTraits())
-        );
-        if(!$usingTrait) {
-            $this->info(self::format('This is not a statable model', 'error'), ': ' . self::format($modelClass, 'model'));
-            return;
-        }
-        $modelStates = (new $modelClass)->getStates();
         foreach ($modelStates as $state => $definition) {
             $state_type = $definition['type'] ?? null;
 
@@ -102,6 +94,48 @@ class SeedCommand extends Command
         }
     }
 
+    protected function processModelClass($modelClass, $verified = false)
+    {
+        if(isset($this->processedModels[$modelClass])) return;
+        // mark this model as processed
+        $this->processedModels[$modelClass] = 1;
+
+        $this->info('Processing model: ' . self::format($modelClass, 'model'));
+        if(!$verified){
+            $usingTrait = in_array(
+                Stateable::class,
+                array_keys((new \ReflectionClass($modelClass))->getTraits())
+            );
+            if(!$usingTrait) {
+                $this->info(self::format('This is not a statable model', 'error'), ': ' . self::format($modelClass, 'model'));
+                return;
+            }
+        }
+        $modelStates = (new $modelClass)->getStates();
+
+        $this->processModelStates($modelStates);
+    }
+
+    protected function processFolder($folder)
+    {
+
+        $this->info('Processing folder: ' . self::format($folder, 'folder'));
+
+        $models = collect(ClassMapGenerator::createMap(base_path($folder)));
+
+        foreach ($models as $class => $path) {
+            $this->info('--checking class: ' . self::format($class, 'model'));
+            $reflection = new \ReflectionClass($class);
+            $valid = $reflection->isSubclassOf(Model::class) &&
+                        !$reflection->isAbstract() && in_array(
+                            Stateable::class,
+                            array_keys($reflection->getTraits())
+                        );
+
+            if($valid) $this->processModelClass($class, true);
+        }
+    }
+
     /**
      * Execute the console command.
      *
@@ -114,14 +148,25 @@ class SeedCommand extends Command
         $this->addStyle('error', 'white', 'red', ['bold']);
         $this->info(self::format('Seeding states', 'title'));
         $this->addStyle('model', 'yellow', 'black', ['bold']);
+        $this->addStyle('folder', 'green', 'black', ['bold']);
         $this->stateClass = Flatstate::stateClass();
         $this->info('State class: ' . self::format($this->stateClass, 'model'));
-        $models = Flatstate::config('models');
+
         $this->manager = app('flatstates');
         $this->manager->clearCache();
 
+        // process single models
+        $models = Flatstate::config('models', []);
         foreach ($models as $modelClass) {
-            $this->processModelStates($modelClass);
+            $this->processModelClass($modelClass);
+        }
+
+        // process model folders
+        $folders = Flatstate::config('folders', ['app/Models']);
+        if(is_array($folders)){
+            foreach ($folders as $folder) {
+                $this->processFolder($folder);
+            }
         }
 
         $this->manager->clearCache();

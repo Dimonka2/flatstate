@@ -6,11 +6,18 @@ use dimonka2\flatstate\Flatstate;
 trait Stateable
 {
    	/* protected $states =  [
-	    'state_id' => ['type' => 'projects',
+	    'state_id' => [
+            'type' => 'projects',
+            'default' => 'pr_active',
 			['name' => 'Active', 'key' => 'pr_active', 'descriptions' => '..', 'icon' => 'fa fa-info', 'color' => 'danger',],
 		],
 	 ] */
     // protected $states = [];
+
+    public function initializeStatable()
+    {
+        $this->setStateDefaults();
+    }
 
     public function getStates()
 	{
@@ -55,5 +62,18 @@ trait Stateable
     public function formatStateType($icon = true)
     {
         return static::formatState($this->type_id, $icon);
+    }
+
+    private function setStateDefaults(): void
+    {
+        foreach ($this->getStates() as $field => $config) {
+            if ($this->{$field} !== null) {
+                continue;
+            }
+            if (!array_key_exists('default', $config)) {
+                continue;
+            }
+            $this->{$field} = Flatstate::selectStateId($config['default']);
+        }
     }
 }
