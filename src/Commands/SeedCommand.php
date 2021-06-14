@@ -71,7 +71,7 @@ class SeedCommand extends Command
             $properties = '';
             if($definition['icon'] ?? false) $properties .= 'icon: ' . $definition['icon'] . '; ';
             if($definition['color'] ?? false) $properties .= 'color: ' . $definition['color'] . '; ';
-            $this->info('Seeding: '. self::format($key, 'model') . ' / ' . $name . ($properties ? ' - ' . $properties : ""));
+            $this->info("\t\tseeding: ". self::format($key, 'model') . ' / ' . $name . ($properties ? ' - ' . $properties : ""));
         }
     }
 
@@ -85,7 +85,7 @@ class SeedCommand extends Command
                 return;
             }
 
-            $this->info('Seeding states: ' . self::format($state, 'model') . ' type: ' . self::format($state_type, 'model') );
+            $this->info("\tseeding states: " . self::format($state, 'model') . ' type: ' . self::format($state_type, 'model') );
             foreach($definition as $state){
                 if(is_array($state)) {
                     $this->processState($state_type, $state);
@@ -100,7 +100,7 @@ class SeedCommand extends Command
         // mark this model as processed
         $this->processedModels[$modelClass] = 1;
 
-        $this->info('Processing model: ' . self::format($modelClass, 'model'));
+        $this->info("\tprocessing model: " . self::format($modelClass, 'model'));
         if(!$verified){
             $usingTrait = in_array(
                 Stateable::class,
@@ -119,12 +119,12 @@ class SeedCommand extends Command
     protected function processFolder($folder)
     {
 
-        $this->info('Processing folder: ' . self::format($folder, 'folder'));
+        $this->info("\nProcessing folder: " . self::format($folder, 'folder'));
 
         $models = collect(ClassMapGenerator::createMap(base_path($folder)));
 
         foreach ($models as $class => $path) {
-            $this->info('--checking class: ' . self::format($class, 'model'));
+
             $reflection = new \ReflectionClass($class);
             $valid = $reflection->isSubclassOf(Model::class) &&
                         !$reflection->isAbstract() && in_array(
@@ -132,7 +132,11 @@ class SeedCommand extends Command
                             array_keys($reflection->getTraits())
                         );
 
-            if($valid) $this->processModelClass($class, true);
+            if($valid) {
+                $this->processModelClass($class, true);
+            } else {
+                $this->info("\tclass " . self::format($class, 'model') . self::format(' is not stateable.', 'title'));
+            }
         }
     }
 

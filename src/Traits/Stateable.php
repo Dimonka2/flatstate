@@ -14,7 +14,7 @@ trait Stateable
 	 ] */
     // protected $states = [];
 
-    public function initializeStatable()
+    public function initializeStateable()
     {
         $this->setStateDefaults();
     }
