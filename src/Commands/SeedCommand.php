@@ -148,11 +148,11 @@ class SeedCommand extends Command
     public function handle()
     {
         $this->verbose = $this->hasOption('verbose');
-        $this->addStyle('title', 'red', 'default', ['bold']);
+        $this->addStyle('title', 'bright-red', 'default', ['bold']);
         $this->addStyle('error', 'white', 'red', ['bold']);
-        $this->info(self::format('Seeding states', 'title'));
+        $this->info(self::format('Seeding DB states.', 'title'));
         $this->addStyle('model', 'yellow', 'black', ['bold']);
-        $this->addStyle('folder', 'green', 'black', ['bold']);
+        $this->addStyle('folder', 'bright-green', 'black', ['bold']);
         $this->stateClass = Flatstate::stateClass();
         $this->info('State class: ' . self::format($this->stateClass, 'model'));
 
@@ -161,8 +161,10 @@ class SeedCommand extends Command
 
         // process single models
         $models = Flatstate::config('models', []);
-        foreach ($models as $modelClass) {
-            $this->processModelClass($modelClass);
+        if(is_array($models)){
+            foreach ($models as $modelClass) {
+                $this->processModelClass($modelClass);
+            }
         }
 
         // process model folders
