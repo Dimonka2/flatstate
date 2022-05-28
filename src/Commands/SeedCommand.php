@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use dimonka2\flatstate\Flatstate;
 use Illuminate\Database\Eloquent\Model;
 use dimonka2\flatstate\Traits\Stateable;
-use Symfony\Component\ClassLoader\ClassMapGenerator;
+use Composer\Autoload\ClassMapGenerator;
 
 class SeedCommand extends Command
 {

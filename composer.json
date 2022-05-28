@@ -20,7 +20,7 @@
     "require": {
         "php": "^7 | ^8",
         "laravel/framework": "^7 | ^8",
-        "symfony/class-loader": "3^"
+        "composer/composer": "^2"
     },
     "extra": {
         "laravel": {

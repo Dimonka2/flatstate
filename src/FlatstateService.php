@@ -65,6 +65,15 @@ class FlatstateService
 		return ($addIcon ? static::formatIcon($state->icon) . "&nbsp;" : "") . $state->name;
 	}
 
+    public static function validationString(string $category, $required = true) 
+    {
+        $keys = collect(static::manager()->getStateList($category))
+            ->map(fn ($item) => $item->state_key)->all();
+        return 'string|' . 
+            ( $required ? 'required' : 'nullable|sometimes' ) .
+            '|in:' . join(',', $keys);
+    }
+
     public static function formatIcon($icon)
     {
         return '<i class="'. $icon . '"></i>';
