@@ -31,6 +31,10 @@ class FlatstateServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->loadMigrationsFrom(__DIR__.'/Migration');
             $this->publishes([
+                __DIR__.'/Migration' => database_path('migrations'),
+            ], 'flatstate-migrations');
+
+            $this->publishes([
                 $this->getConfigFile() => config_path(self::config),
             ], 'config');
             $this->commands([
