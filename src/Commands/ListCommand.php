@@ -24,7 +24,7 @@ class ListCommand extends Command
      *
      * @var string
      */
-    protected $description = 'List availabe categories or states in category. ';
+    protected $description = 'List available categories or states in category. ';
 
     /**
      * Create a new command instance.

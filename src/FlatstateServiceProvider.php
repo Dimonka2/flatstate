@@ -40,6 +40,7 @@ class FlatstateServiceProvider extends ServiceProvider
             $this->commands([
                 \dimonka2\flatstate\Commands\ListCommand::class,
                 \dimonka2\flatstate\Commands\SeedCommand::class,
+                \dimonka2\flatstate\Commands\GenTSCommand::class,
             ]);
         } else {
             Blade::directive(config('state_directive', 'state'), function ($state) {
